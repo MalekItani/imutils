@@ -19,7 +19,6 @@ class WebcamVideoStream:
 	def start(self):
 		# start the thread to read frames from the video stream
 		t = Thread(target=self.update, name=self.name, args=())
-		t.daemon = True
 		t.start()
 		return self
 
@@ -40,3 +39,11 @@ class WebcamVideoStream:
 	def stop(self):
 		# indicate that the thread should be stopped
 		self.stopped = True
+	
+	def release(self):
+		# stop recording and release all resources
+		self.stop()
+		self.stream.release()
+	def __del__(self):
+		# release the stream when it goes out of scope
+		self.release()
